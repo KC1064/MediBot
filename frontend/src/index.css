@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@font-face {
+    font-family: 'Nexus'; 
+    src: url('./assets/CSNexus-Regular_demo-BF67a2c00d3282b.otf') format('otf');  
+    font-weight: normal; 
+    font-style: normal; 
+}
