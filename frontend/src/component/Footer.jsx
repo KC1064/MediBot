@@ -9,7 +9,7 @@ const Footer = () => {
       animate={{
         y:0,opacity:1
       }}
-      transition={{duration:1,delay:3.6}}
+      transition={{duration:1,delay:2.5}}
         style={{
           fontFamily: "Nexus",
         }}
@@ -24,7 +24,7 @@ const Footer = () => {
       animate={{
         y:0,opacity:1
       }}
-      transition={{duration:1,delay:3.6}}
+      transition={{duration:1,delay:2.5}}
         style={{
           fontFamily: "Nexus",
         }}
