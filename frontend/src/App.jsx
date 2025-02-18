@@ -84,7 +84,7 @@
 // export default App;
 
 import React from "react";
-import bg from "./assets/bg.jpg";
+import bg from "./assets/2.jpeg";
 import Navbar from "./component/Navbar";
 import { motion } from "framer-motion";
 import Footer from "./component/Footer";
