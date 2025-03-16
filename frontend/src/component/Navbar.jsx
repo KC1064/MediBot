@@ -1,9 +1,6 @@
 import React from "react";
-import Buttons from "../utils/Buttons";
 import { motion } from "framer-motion";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./Login"
-import SignUp from "./SignUp"
+
 
 const Navbar = () => {
   return (
@@ -13,13 +10,13 @@ const Navbar = () => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
         style={{
-          boxShadow:
-            "6px 8px 20px rgb(247, 138, 141), -6px -8px 20px rgb(245, 88, 253)",
-          background: "rgba(255, 255, 255, 0.15)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
+          // boxShadow:
+          //   "6px 8px 20px rgb(247, 138, 141), -6px -8px 20px rgb(245, 88, 253)",
+          background: "rgba(255, 255, 255, 0.05)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
-        className="w-[95%] lg:w-[50%] rounded-xl border-3 border-black flex justify-between items-center px-2 py-1"
+        className="w-[95%] lg:w-[50%] rounded-xl border-3 border-white flex justify-between items-center px-2 py-1"
       >
         {/* <BrowserRouter>
           <Routes>
@@ -31,13 +28,11 @@ const Navbar = () => {
           style={{
             fontFamily: "Jaro",
           }}
-          className="text-4xl lg:text-5xl"
+          className="text-4xl lg:text-5xl text-white"
         >
           MB.
         </div>
         <div className="flex items-center gap-1 lg:gap-3">
-          <Buttons name={"SignUp"} type={"secondary"} dest={"/login"} />
-          <Buttons name={"Login"} type={"primary"} dest={"/signup"} />
         </div>
       </motion.div>
     </div>
