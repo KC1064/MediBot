@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 @font-face {
-    font-family: 'Nexus'; 
-    src: url('./assets/CSNexus-Regular_demo-BF67a2c00d3282b.otf') format('otf');  
-    font-weight: normal; 
-    font-style: normal; 
+    font-family: "Roboto";
+    src: url("../public/roboto/Roboto-Black.ttf");
+}
+
+@font-face {
+    font-family: "OpenSans";
+    src: url('../public/open-sans-font-family-1743982018-0/OpenSans-Medium-BF63e1a1f80a325.ttf');
 }

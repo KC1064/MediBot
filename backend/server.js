@@ -1,18 +1,15 @@
+require("dotenv").config();
 const express = require("express");
-const bodyParser= require("body-parser");
+const app = express();
+const connectDB = require("./database/dbConnection");
+const userController = require("./controllers/user.controllers");
 
+connectDB();
+app.use(express.json());
 
+app.post("/api/signup", userController.userReg);
+app.get("/api/login", userController.userLogin);
 
-const app= express();
-
-app.get('/', (req, res) => {
-    res.send('<h1>Hello, World!</h1>');
+app.listen(process.env.PORT, () => {
+  console.log("Server Running");
 });
-
-
-app.listen(3000,function()
-{
-    
-    console.log("Server is up and running on port 3000");
-    
-})
