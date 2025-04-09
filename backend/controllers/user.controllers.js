@@ -7,10 +7,10 @@ const jwt = require("jsonwebtoken");
 // ===============================
 const userReg = async (req, res) => {
   try {
-    const { fullName, email, password } = req.body;
+    const { email, password } = req.body;
 
     // Validate input fields
-    if (!fullName || !email || !password) {
+    if (!email || !password) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -31,7 +31,6 @@ const userReg = async (req, res) => {
 
     // Create new user
     const user = await User.create({
-      fullName,
       email,
       password: hashedPass,
     });
@@ -50,7 +49,6 @@ const userReg = async (req, res) => {
       token,
       data: {
         id: user._id,
-        fullName: user.fullName,
         email: user.email,
       },
     });
@@ -69,9 +67,8 @@ const userReg = async (req, res) => {
 // ===============================
 const userLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.query;
 
-    // Check for missing credentials
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -79,7 +76,6 @@ const userLogin = async (req, res) => {
       });
     }
 
-    // Find user by email
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
       return res.status(401).json({
@@ -88,7 +84,6 @@ const userLogin = async (req, res) => {
       });
     }
 
-    // Compare hashed password
     const isPasswordValid = await bcrypt.compare(
       password,
       existingUser.password
@@ -100,24 +95,16 @@ const userLogin = async (req, res) => {
       });
     }
 
-    // Generate JWT token for logged-in user
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRE || "1d",
-    });
-
-    // Send user info with token
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
-      token,
       data: {
         id: existingUser._id,
-        fullName: existingUser.fullName,
         email: existingUser.email,
       },
     });
   } catch (error) {
-    console.error("User login error:", error);
+    console.error("User login error:", error); // CHECK this in terminal
     res.status(500).json({
       success: false,
       message: "Failed to login user",
