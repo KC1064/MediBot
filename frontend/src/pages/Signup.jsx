@@ -34,7 +34,7 @@ const Signup = () => {
 
       setMessage("Registration successful!");
       // Navigate to dashboard after successful registration
-      navigate("/dashboard");
+      navigate("/onboarding");
       // Clear form after successful registration
       setFormData({ email: "", password: "" });
     } catch (error) {
