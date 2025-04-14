@@ -1,11 +1,43 @@
 @import "tailwindcss";
 
 @font-face {
-    font-family: "Roboto";
-    src: url("../public/roboto/Roboto-Black.ttf");
+  font-family: "mooxy";
+  src: url(../public/mooxy-font-1744637896-0/mooxy.ttf);
 }
 
 @font-face {
-    font-family: "OpenSans";
-    src: url('../public/open-sans-font-family-1743982018-0/OpenSans-Medium-BF63e1a1f80a325.ttf');
+  font-family: "polin-medium";
+  src: url(../public/polin-sans-font-family-1744637767-0/polintest-medium.otf);
 }
+
+@font-face {
+  font-family: "polin-hair-italic";
+  src: url(../public/polin-sans-font-family-1744637767-0/polintest-lightitalic.otf);
+}
+
+@font-face {
+  font-family: "chopra";
+  src: url(../public/chopra-font-1744638784-0/Chopra-BF67dfa2ad472cb.ttf);
+}
+
+@font-face {
+  font-family: "chopra-extended";
+  src: url(../public/chopra-font-1744638784-0/Chopra-Extended-BF67dfa2ad3db8a.ttf);
+}
+
+@keyframes glow {
+    0% {
+      text-shadow: 0 0 6px rgba(168, 85, 247, 0.4), 0 0 16px rgba(168, 85, 247, 0.4);
+    }
+    50% {
+      text-shadow: 0 0 8px rgba(168, 85, 247, 0.6), 0 0 24px rgba(168, 85, 247, 0.6);
+    }
+    100% {
+      text-shadow: 0 0 6px rgba(168, 85, 247, 0.4), 0 0 16px rgba(168, 85, 247, 0.4);
+    }
+  }
+  
+  .animate-glow {
+    animation: glow 2s infinite ease-in-out;
+  }
+  
