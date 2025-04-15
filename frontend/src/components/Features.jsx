@@ -107,14 +107,6 @@ const Features = () => {
         >
           Why Choose Healio?
         </motion.h2>
-        <motion.p
-          className="text-xl mt-2 font-[chopra-extended] bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-        >
-          Your Health, Simplified
-        </motion.p>
       </motion.div>
 
       <motion.div

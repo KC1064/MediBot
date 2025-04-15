@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { FaComments } from "react-icons/fa";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import Features from "../components/Features";
+import Guide from "../components/Guide";
 
 const Home = () => {
   const controls = useAnimation();
@@ -24,10 +25,13 @@ const Home = () => {
   }, [controls, inView]);
 
   return (
-    <div className="min-h-screen w-full flex flex-col"> {/* Use flex-col for overall layout */}
+    <div className="min-h-screen w-full flex flex-col">
+      {" "}
+      {/* Use flex-col for overall layout */}
       <Navbar />
-
-      <div className="flex-grow"> {/* This will take up remaining vertical space */}
+      <div className="flex-grow">
+        {" "}
+        {/* This will take up remaining vertical space */}
         <motion.div
           className="text-white flex justify-center items-center gap-10 flex-col w-full h-[calc(100vh-200px)] text-center px-4 mt-10"
           initial={{ opacity: 0, y: 30 }}
@@ -50,9 +54,9 @@ const Home = () => {
             transition={{ delay: 0.6, duration: 0.6 }}
           >
             Worried about a headache, fever, or unexplained pain? Healio uses
-            advanced AI to analyze your symptoms through simple conversation. It's
-            fast, free, and designed to help you decide when to rest, visit a
-            doctor, or seek urgent care.
+            advanced AI to analyze your symptoms through simple conversation.
+            It's fast, free, and designed to help you decide when to rest, visit
+            a doctor, or seek urgent care.
           </motion.p>
 
           <motion.div
@@ -81,8 +85,9 @@ const Home = () => {
           </motion.div>
         </motion.div>
       </div>
-
-      <div className="w-full flex justify-center py-10"> {/* Added padding to push it down */}
+      <div className="w-full flex justify-center py-10">
+        {" "}
+        {/* Added padding to push it down */}
         <motion.img
           src="./img.png"
           alt=""
@@ -94,6 +99,7 @@ const Home = () => {
         />
       </div>
       <Features />
+      <Guide />
       <Footer />
     </div>
   );
