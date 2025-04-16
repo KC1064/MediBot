@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
-const Button = ({ name, type }) => {
+const Button = ({ name, type, link }) => {
   const isPrimary = type === "primary";
 
   return (
@@ -20,7 +21,7 @@ const Button = ({ name, type }) => {
             : "bg-gradient-to-r from-[#b5179e] to-[#f72585] text-white"
         }`}
     >
-      {name}
+      <Link to={`/${link}`}>{name}</Link>
     </motion.button>
   );
 };

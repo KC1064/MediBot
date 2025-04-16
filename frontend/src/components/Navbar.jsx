@@ -50,8 +50,8 @@ const Navbar = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <Button name="Sign Up" type="primary" />
-        <Button name="Sign In" type="secondary" />
+        <Button name="Sign Up" type="primary" link={"signup"} />
+        <Button name="Sign In" type="secondary" link={"login"} />
       </motion.div>
     </motion.nav>
   );
