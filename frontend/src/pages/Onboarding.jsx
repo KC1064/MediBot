@@ -1,541 +1,427 @@
-import { useState } from "react";
-import { AlertCircle, Check, Plus, X } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Lock,
+  Mail,
+  User,
+  Ruler,
+  Weight,
+  Calendar,
+  Users,
+  Heart,
+  Home,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
-export default function OnboardingForm() {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    height: "",
-    weight: "",
-    age: "",
-    gender: "",
-    history: [],
-  });
+function Onboarding() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [medicalHistory, setMedicalHistory] = useState("");
+  const [medicalHistoryList, setMedicalHistoryList] = useState([]);
+  const navigate = useNavigate();
 
-  const [historyInput, setHistoryInput] = useState("");
-  const [errors, setErrors] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Clear error when field is being edited
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: "",
-      });
-    }
-  };
-
-  const addMedicalHistory = () => {
-    if (historyInput.trim()) {
-      setFormData({
-        ...formData,
-        history: [...formData.history, historyInput.trim()],
-      });
-      setHistoryInput("");
-
-      // Clear error if it exists
-      if (errors.history) {
-        setErrors({
-          ...errors,
-          history: "",
-        });
-      }
-    }
-  };
-
-  const removeMedicalHistory = (index) => {
-    const updatedHistory = formData.history.filter((_, i) => i !== index);
-    setFormData({
-      ...formData,
-      history: updatedHistory,
-    });
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    }
-
-    if (!formData.height) {
-      newErrors.height = "Height is required";
-    } else if (isNaN(formData.height) || Number(formData.height) <= 0) {
-      newErrors.height = "Height must be a positive number";
-    }
-
-    if (!formData.weight) {
-      newErrors.weight = "Weight is required";
-    } else if (isNaN(formData.weight) || Number(formData.weight) <= 0) {
-      newErrors.weight = "Weight must be a positive number";
-    }
-
-    if (!formData.age) {
-      newErrors.age = "Age is required";
-    } else if (isNaN(formData.age) || Number(formData.age) <= 0) {
-      newErrors.age = "Age must be a positive number";
-    }
-
-    if (!formData.gender) {
-      newErrors.gender = "Please select a gender";
-    }
-
-    if (formData.history.length === 0) {
-      newErrors.history = "Please add at least one medical history item";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Registration attempted with:", {
+      firstName,
+      lastName,
+      email,
+      password,
+      height,
+      weight,
+      age,
+      gender,
+      medicalHistoryList,
+    });
+    // Add your registration logic here
+  };
 
-    if (validateForm()) {
-      setSubmitting(true);
-
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Format data for submission
-        const submissionData = {
-          ...formData,
-          height: Number(formData.height),
-          weight: Number(formData.weight),
-          age: Number(formData.age),
-        };
-
-        console.log("Form submitted:", submissionData);
-        setIsSubmitted(true);
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      } finally {
-        setSubmitting(false);
-      }
+  const handleAddMedicalHistory = () => {
+    if (medicalHistory.trim()) {
+      setMedicalHistoryList([...medicalHistoryList, medicalHistory]);
+      setMedicalHistory("");
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      fullName: "",
-      height: "",
-      weight: "",
-      age: "",
-      gender: "",
-      history: [],
-    });
-    setHistoryInput("");
-    setErrors({});
-    setIsSubmitted(false);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+        duration: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 300, damping: 24 },
+    },
+  };
+
+  const buttonVariants = {
+    rest: { scale: 1 },
+    hover: {
+      scale: 1.03,
+      boxShadow:
+        "0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.2)",
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 17,
+      },
+    },
+    tap: { scale: 0.98 },
+  };
+
+  const logoVariants = {
+    rest: { rotate: 0 },
+    hover: {
+      rotate: [0, -10, 10, -10, 10, 0],
+      transition: { duration: 0.6, ease: "easeInOut" },
+    },
+  };
+
+  const imageContainerVariants = {
+    hidden: { x: 50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.2 },
+    },
   };
 
   return (
-    <div className="max-w-md mx-auto p-8 bg-white rounded-xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800 border-b pb-4">
-        Patient Onboarding
-      </h2>
+    <div className="h-screen flex items-center justify-center p-4 bg-transparent">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="w-full max-w-4xl rounded-2xl overflow-hidden flex shadow-[0_20px_50px_rgba(8,_112,_184,_0.15)] z-10 backdrop-filter backdrop-blur-xl border border-white/40 relative flex-row-reverse h-[90vh]"
+      >
+        {/* Decorative Border Circles */}
+        <div className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full filter blur-xl bg-blue-300 opacity-30" />
+        <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full filter blur-xl bg-purple-300 opacity-30" />
+        <div className="absolute bottom-0 left-0 -translate-x-1/2 translate-y-1/2 w-48 h-48 rounded-full filter blur-xl bg-pink-300 opacity-30" />
+        <div className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-36 h-36 rounded-full filter blur-xl bg-indigo-300 opacity-30" />
 
-      {isSubmitted ? (
-        <div className="text-center">
-          <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg border border-green-200 flex items-center justify-center">
-            <Check className="mr-2" size={20} />
-            <span>Form submitted successfully!</span>
-          </div>
-
-          <div className="mb-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
-            <h3 className="font-semibold text-lg mb-4 text-gray-700">
-              Submitted Information
-            </h3>
-
-            <div className="space-y-2 text-left">
-              <div className="grid grid-cols-3">
-                <span className="font-medium col-span-1 text-gray-600">
-                  Name:
-                </span>
-                <span className="col-span-2">{formData.fullName}</span>
-              </div>
-
-              <div className="grid grid-cols-3">
-                <span className="font-medium col-span-1 text-gray-600">
-                  Height:
-                </span>
-                <span className="col-span-2">{formData.height} cm</span>
-              </div>
-
-              <div className="grid grid-cols-3">
-                <span className="font-medium col-span-1 text-gray-600">
-                  Weight:
-                </span>
-                <span className="col-span-2">{formData.weight} kg</span>
-              </div>
-
-              <div className="grid grid-cols-3">
-                <span className="font-medium col-span-1 text-gray-600">
-                  Age:
-                </span>
-                <span className="col-span-2">{formData.age}</span>
-              </div>
-
-              <div className="grid grid-cols-3">
-                <span className="font-medium col-span-1 text-gray-600">
-                  Gender:
-                </span>
-                <span className="col-span-2">{formData.gender}</span>
-              </div>
-
-              <div className="mt-2">
-                <span className="font-medium text-gray-600 block mb-1">
-                  Medical History:
-                </span>
-                <ul className="list-disc pl-8 mt-1 bg-white p-3 rounded-md border border-gray-100">
-                  {formData.history.map((item, index) => (
-                    <li key={index} className="text-gray-700">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={resetForm}
-            className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
+        {/* Left Side - Image */}
+        <motion.div
+          variants={imageContainerVariants}
+          initial="hidden"
+          animate="visible"
+          className="w-1/2 relative overflow-hidden"
+        >
+          <motion.img
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            src="./login.png"
+            alt="Sign In Visual"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            className="absolute bottom-8 right-8 text-white text-right"
           >
-            Submit Another Form
+            <motion.h2
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="text-2xl font-bold mb-2 bg-gradient-to-br from-green-600 via-lime-500 to-yellow-600 text-transparent bg-clip-text font-[polin-medium]"
+            >
+              Onboarding
+            </motion.h2>
+            <motion.p
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              className="text-xs max-w-xs bg-gradient-to-br from-green-600 via-lime-500 to-yellow-600 text-transparent bg-clip-text font-[polin-medium]"
+            >
+              Fill out the details and start getting insights on your health.
+            </motion.p>
+          </motion.div>
+        </motion.div>
+
+        {/* Right Side - Sign In Form */}
+        <div className="w-1/2 backdrop-blur-xl p-6 relative">
+          {/* Home Button */}
+          <button
+            onClick={() => navigate("/")}
+            className="absolute top-4 right-4 flex items-center gap-2"
+          >
+            <Home className="w-6 h-6 text-lime-300" />
           </button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label
-              className="block text-gray-700 font-medium mb-2"
-              htmlFor="fullName"
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="h-full flex flex-col justify-center relative z-10"
+          >
+            <motion.div variants={itemVariants} className="mb-4">
+              <motion.div
+                variants={logoVariants}
+                initial="rest"
+                whileHover="hover"
+                className="w-14 h-14 bg-gradient-to-br from-green-500 via-lime-500 to-yellow-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-lime-500/20 backdrop-blur-sm border border-white/20"
+              >
+                <Heart className="w-7 h-7 text-white" />
+              </motion.div>
+              <motion.h2
+                variants={itemVariants}
+                className="text-xl font-bold text-center font-[chopra] bg-gradient-to-br from-green-500 via-lime-500 to-yellow-500 text-transparent bg-clip-text mb-1"
+              >
+                Health Profile
+              </motion.h2>
+              <motion.p
+                variants={itemVariants}
+                className="mt-0 text-xs text-center font-[chopra] bg-gradient-to-br from-green-500 via-lime-500 to-yellow-500 text-transparent bg-clip-text mb-3"
+              >
+                Complete your health information
+              </motion.p>
+            </motion.div>
+
+            <motion.form
+              variants={containerVariants}
+              className="space-y-3 "
+              onSubmit={handleSubmit}
+              style={{ maxHeight: "calc(90vh - 160px)" }}
             >
-              Full Name*
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className={`w-full px-4 py-3 border rounded-lg ${
-                  errors.fullName
-                    ? "border-red-500 pr-10 bg-red-50"
-                    : formData.fullName
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-300"
-                } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
-                placeholder="Enter your full name"
-              />
-              {errors.fullName && (
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <AlertCircle className="h-5 w-5 text-red-500" />
+              {/* Full Name */}
+              {/* <motion.div variants={itemVariants} className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <User className="h-5 w-5 text-gray-400" />
                 </div>
-              )}
-            </div>
-            {errors.fullName && (
-              <p className="text-red-500 text-sm mt-1 flex items-center">
-                <AlertCircle className="h-3 w-3 mr-1" />
-                {errors.fullName}
-              </p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                className="block text-gray-700 font-medium mb-2"
-                htmlFor="height"
-              >
-                Height (cm)*
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  id="height"
-                  name="height"
-                  value={formData.height}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg ${
-                    errors.height
-                      ? "border-red-500 pr-10 bg-red-50"
-                      : formData.height
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
-                  placeholder="Height in cm"
-                  min="1"
+                <motion.input
+                  whileFocus={{ scale: 1.005 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  required
+                  value={`${firstName} ${lastName}`}
+                  onChange={(e) => {
+                    const names = e.target.value.split(" ");
+                    setFirstName(names[0] || "");
+                    setLastName(names.slice(1).join(" ") || "");
+                  }}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                  placeholder="FullName"
                 />
-                {errors.height && (
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <AlertCircle className="h-5 w-5 text-red-500" />
-                  </div>
-                )}
-              </div>
-              {errors.height && (
-                <p className="text-red-500 text-sm mt-1 flex items-center">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  {errors.height}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                className="block text-gray-700 font-medium mb-2"
-                htmlFor="weight"
-              >
-                Weight (kg)*
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  id="weight"
-                  name="weight"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg ${
-                    errors.weight
-                      ? "border-red-500 pr-10 bg-red-50"
-                      : formData.weight
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
-                  placeholder="Weight in kg"
-                  min="1"
-                />
-                {errors.weight && (
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <AlertCircle className="h-5 w-5 text-red-500" />
-                  </div>
-                )}
-              </div>
-              {errors.weight && (
-                <p className="text-red-500 text-sm mt-1 flex items-center">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  {errors.weight}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label
-                className="block text-gray-700 font-medium mb-2"
-                htmlFor="age"
-              >
-                Age*
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  id="age"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg ${
-                    errors.age
-                      ? "border-red-500 pr-10 bg-red-50"
-                      : formData.age
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
-                  placeholder="Your age"
-                  min="1"
-                />
-                {errors.age && (
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <AlertCircle className="h-5 w-5 text-red-500" />
-                  </div>
-                )}
-              </div>
-              {errors.age && (
-                <p className="text-red-500 text-sm mt-1 flex items-center">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  {errors.age}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                className="block text-gray-700 font-medium mb-2"
-                htmlFor="gender"
-              >
-                Gender*
-              </label>
-              <div className="relative">
-                <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg appearance-none ${
-                    errors.gender
-                      ? "border-red-500 bg-red-50"
-                      : formData.gender
-                      ? "border-green-500 bg-green-50"
-                      : "border-gray-300"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors`}
-                >
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                  <option value="Prefer Not to Say">Prefer Not to Say</option>
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  {errors.gender ? (
-                    <AlertCircle className="h-5 w-5 text-red-500" />
-                  ) : (
-                    <svg
-                      className="h-5 w-5 text-gray-400"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
+              </motion.div> */}
+              <motion.div variants={itemVariants} className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <User className="h-5 w-5 text-gray-400" />
                 </div>
-              </div>
-              {errors.gender && (
-                <p className="text-red-500 text-sm mt-1 flex items-center">
-                  <AlertCircle className="h-3 w-3 mr-1" />
-                  {errors.gender}
-                </p>
-              )}
-            </div>
-          </div>
+                <motion.input
+                  whileFocus={{ scale: 1.005 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  required
+                  value={`${firstName} ${lastName}`}
+                  onChange={(e) => {
+                    const names = e.target.value.split(" ");
+                    setFirstName(names[0] || "");
+                    setLastName(names.slice(1).join(" ") || "");
+                  }}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                  placeholder="Full Name"
+                />
+              </motion.div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Medical History*
-            </label>
-            <div className="flex space-x-2 mb-2">
-              <input
-                type="text"
-                value={historyInput}
-                onChange={(e) => setHistoryInput(e.target.value)}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Add medical condition"
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addMedicalHistory();
-                  }
-                }}
-              />
-              <button
-                type="button"
-                onClick={addMedicalHistory}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-              >
-                <Plus size={18} className="mr-1" /> Add
-              </button>
-            </div>
-
-            <div
-              className={`border rounded-lg ${
-                errors.history ? "border-red-500" : "border-gray-200"
-              }`}
-            >
-              {formData.history.length > 0 ? (
-                <ul
-                  className={`p-3 rounded-lg max-h-40 overflow-y-auto ${
-                    errors.history ? "bg-red-50" : "bg-gray-50"
-                  }`}
-                >
-                  {formData.history.map((item, index) => (
-                    <li
-                      key={index}
-                      className="flex justify-between items-center py-2 px-3 mb-1 bg-white rounded-md border border-gray-100 shadow-sm"
-                    >
-                      <span>{item}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeMedicalHistory(index)}
-                        className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
-                      >
-                        <X size={16} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div
-                  className={`p-6 text-center ${
-                    errors.history ? "text-red-400" : "text-gray-400"
-                  } rounded-lg`}
-                >
-                  <p>No medical history added yet</p>
+              {/* Height and Weight Row */}
+              <motion.div variants={itemVariants} className="flex gap-3">
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <Ruler className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <motion.input
+                    whileFocus={{ scale: 1.005 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    id="height"
+                    name="height"
+                    type="text"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                    placeholder="Height (cm)"
+                  />
                 </div>
-              )}
-            </div>
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <Weight className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <motion.input
+                    whileFocus={{ scale: 1.005 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    id="weight"
+                    name="weight"
+                    type="text"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                    placeholder="Weight (kg)"
+                  />
+                </div>
+              </motion.div>
 
-            {errors.history && (
-              <p className="text-red-500 text-sm mt-1 flex items-center">
-                <AlertCircle className="h-3 w-3 mr-1" />
-                {errors.history}
-              </p>
-            )}
-          </div>
-
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={submitting}
-              className={`w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors shadow-md font-medium flex items-center justify-center ${
-                submitting ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            >
-              {submitting ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
+              {/* Age and Gender Row */}
+              <motion.div variants={itemVariants} className="flex gap-3">
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <Calendar className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <motion.input
+                    whileFocus={{ scale: 1.005 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    id="age"
+                    name="age"
+                    type="number"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 text-lime-400 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                    placeholder="Age"
+                  />
+                </div>
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <Users className="h-5 w-5 text-lime-400" />
+                  </div>
+                  <motion.select
+                    whileFocus={{ scale: 1.005 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    id="gender"
+                    name="gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm appearance-none text-lime-400"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Submitting...
-                </>
-              ) : (
-                "Submit Form"
-              )}
-            </button>
-          </div>
-        </form>
-      )}
+                    <option value="" disabled selected>
+                      Select Gender
+                    </option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </motion.select>
+                </div>
+              </motion.div>
+
+              {/* Email */}
+
+              {/* Medical History Input */}
+              <motion.div variants={itemVariants} className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <Heart className="h-5 w-5 text-gray-400" />
+                </div>
+                <motion.input
+                  whileFocus={{ scale: 1.005 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  id="medicalHistory"
+                  name="medicalHistory"
+                  type="text"
+                  value={medicalHistory}
+                  onChange={(e) => setMedicalHistory(e.target.value)}
+                  className="block w-full pl-10 pr-16 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                  placeholder="Add medical history"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddMedicalHistory();
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddMedicalHistory}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm font-medium text-lime-500 hover:text-lime-600 focus:outline-none"
+                >
+                  Add
+                </button>
+              </motion.div>
+
+              {/* Medical History List */}
+              <motion.div
+                variants={itemVariants}
+                className="max-h-28 overflow-y-auto border border-white/30 rounded-lg bg-white/10 backdrop-blur-sm p-2"
+              >
+                {medicalHistoryList.length === 0 ? (
+                  <p className="text-center text-gray-400 text-sm py-2">
+                    No medical history added
+                  </p>
+                ) : (
+                  <ul className="space-y-1">
+                    {medicalHistoryList.map((item, index) => (
+                      <li
+                        key={index}
+                        className="text-sm bg-white/20 rounded px-3 py-1.5 flex justify-between items-center"
+                      >
+                        <span className="text-gray-800">{item}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMedicalHistoryList(
+                              medicalHistoryList.filter((_, i) => i !== index)
+                            );
+                          }}
+                          className="text-red-500 hover:text-red-600 focus:outline-none"
+                        >
+                          ×
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </motion.div>
+
+              {/* Sign Up Button */}
+              <motion.button
+                variants={buttonVariants}
+                initial="rest"
+                whileHover="hover"
+                whileTap="tap"
+                type="submit"
+                className="w-full flex justify-center py-2.5 px-4 rounded-lg shadow-md text-sm font-medium font-[chopra] bg-gradient-to-br from-green-500 via-lime-500 to-yellow-500 text-white hover:from-emerald-600 hover:to-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-all duration-200 backdrop-blur-sm border border-white/10"
+              >
+                Create Health Profile
+              </motion.button>
+            </motion.form>
+
+            {/* Already have an account link */}
+            <motion.p
+              variants={itemVariants}
+              className="mt-3 text-center text-xs bg-gradient-to-br from-green-200 via-lime-300 to-yellow-600 text-transparent bg-clip-text"
+            >
+              Already have an account?{" "}
+              <motion.a
+                whileHover={{ x: 2 }}
+                href="/login"
+                className="font-medium hover:text-lime-500 transition-colors bg-gradient-to-br from-green-600 via-lime-500 to-yellow-600 text-transparent bg-clip-text"
+              >
+                Log in
+              </motion.a>
+            </motion.p>
+          </motion.div>
+        </div>
+      </motion.div>
     </div>
   );
 }
+
+export default Onboarding;

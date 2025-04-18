@@ -3,7 +3,7 @@ import { Lock, Mail, User, Home } from "lucide-react"; // Import Home icon
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-function SignIn() {
+function SignUp() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -300,4 +300,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;
