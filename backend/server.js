@@ -4,6 +4,7 @@ const app = express();
 const authRouter = require("./routes/auth.routes");
 const dbConnect = require("./lib/db");
 const cors = require("cors");
+const chatRouter = require("./routes/chat.routes");
 
 dbConnect();
 app.use(
@@ -14,6 +15,7 @@ app.use(
 );
 app.use(express.json());
 app.use("/api/auth", authRouter);
+app.use("/api", chatRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("Server Running");

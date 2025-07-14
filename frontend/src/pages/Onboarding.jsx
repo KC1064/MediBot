@@ -33,8 +33,6 @@ function Onboarding() {
     e.preventDefault();
 
     try {
-      // Get token from localStorage
-      // const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
 
       if (!userId) {
