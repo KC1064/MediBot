@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Lock, Mail, User, Home } from "lucide-react"; // Import Home icon
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axiosInstance  from "../utils/axiosInstance"; // Adjust the import path as necessary
 
 function SignUp() {
   const [firstName, setFirstName] = useState("");
@@ -10,15 +11,31 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registration attempted with:", {
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-    // Add your registration logic here
+
+    try {
+      const response = await axiosInstance.post("/auth/signup", {
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+
+      console.log("Signup successful:", response.data);
+
+      // Save token (optional, for auth)
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.user._id);
+
+      // Redirect to onboarding page
+      navigate("/onboarding");
+    } catch (error) {
+      console.error("Signup error:", error.response?.data || error.message);
+      alert(
+        error.response?.data?.message || "Something went wrong during signup."
+      );
+    }
   };
 
   const containerVariants = {
@@ -71,17 +88,6 @@ function SignUp() {
       x: 0,
       opacity: 1,
       transition: { type: "spring", stiffness: 100, damping: 20, delay: 0.2 },
-    },
-  };
-
-  const inputContainerVariants = {
-    rest: {
-      borderColor: "rgb(209, 213, 219)",
-      boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-    },
-    focus: {
-      borderColor: "rgb(59, 130, 246)",
-      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.15)",
     },
   };
 
@@ -183,14 +189,17 @@ function SignUp() {
 
             <motion.form
               variants={containerVariants}
-              className="space-y-3" // Adjusted spacing
+              className="space-y-3"
               onSubmit={handleSubmit}
             >
               {/* First and Last Name Row */}
-              <motion.div variants={itemVariants} className="flex gap-3">
+              <motion.div
+                variants={itemVariants}
+                className="flex gap-3 text-lime-400"
+              >
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <User className="h-5 w-5 text-gray-400" />{" "}
+                    <User className="h-5 w-5 text-lime-400" />{" "}
                     {/* Changed icon */}
                   </div>
                   <motion.input
@@ -207,8 +216,8 @@ function SignUp() {
                   />
                 </div>
                 <div className="flex-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <User className="h-5 w-5 text-gray-400" />{" "}
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center text-lime-400">
+                    <User className="h-5 w-5 text-lime-400" />{" "}
                     {/* Changed icon */}
                   </div>
                   <motion.input
@@ -228,8 +237,8 @@ function SignUp() {
 
               {/* Email */}
               <motion.div variants={itemVariants} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 text-lime-400 left-0 pl-3 flex items-center">
+                  <Mail className="h-5 w-5 text-lime-400" />
                 </div>
                 <motion.input
                   whileFocus={{ scale: 1.005 }}
@@ -248,8 +257,8 @@ function SignUp() {
 
               {/* Password */}
               <motion.div variants={itemVariants} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 text-lime-400 left-0 pl-3 flex items-center">
+                  <Lock className="h-5 w-5 text-lime-400" />
                 </div>
                 <motion.input
                   whileFocus={{ scale: 1.005 }}

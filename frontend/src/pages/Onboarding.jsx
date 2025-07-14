@@ -1,51 +1,89 @@
 import React, { useState } from "react";
 import {
-  Lock,
-  Mail,
-  User,
   Ruler,
   Weight,
   Calendar,
   Users,
   Heart,
-  Home,
+  ArrowLeftToLine,
+  Droplet,
+  HeartPulse,
+  FileText,
+  ShieldAlert,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
 function Onboarding() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [bloodGroup, setBloodGroup] = useState("");
+  const [lifeStyle, setLifeStyle] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [medicalHistory, setMedicalHistory] = useState("");
+  const [allergy, setAllergy] = useState("");
   const [medicalHistoryList, setMedicalHistoryList] = useState([]);
+  const [allergyList, setAllergyList] = useState([]);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Registration attempted with:", {
-      firstName,
-      lastName,
-      email,
-      password,
-      height,
-      weight,
-      age,
-      gender,
-      medicalHistoryList,
-    });
-    // Add your registration logic here
+
+    try {
+      // Get token from localStorage
+      // const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        alert("userId not found");
+        return;
+      }
+
+      const response = await axiosInstance.post(
+        "auth/onboarding",
+        {
+          age: Number(age),
+          gender,
+          height: Number(height),
+          weight: Number(weight),
+          bloodGroup,
+          medicalHistories: medicalHistoryList,
+          allergies: allergyList,
+          lifestyle: lifeStyle,
+        },
+      );
+
+      console.log("Health profile submitted successfully:", response.data);
+
+      // Redirect or show success feedback
+      alert("Health profile created successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(
+        "Error submitting health profile:",
+        error.response?.data || error.message
+      );
+      alert(
+        error.response?.data?.message ||
+          "Failed to submit health profile. Please try again."
+      );
+    }
   };
 
   const handleAddMedicalHistory = () => {
     if (medicalHistory.trim()) {
       setMedicalHistoryList([...medicalHistoryList, medicalHistory]);
       setMedicalHistory("");
+    }
+  };
+
+  const handleAddAllergy = () => {
+    if (allergy.trim()) {
+      setAllergyList([...allergyList, allergy]);
+      setAllergy("");
     }
   };
 
@@ -158,12 +196,12 @@ function Onboarding() {
 
         {/* Right Side - Sign In Form */}
         <div className="w-1/2 backdrop-blur-xl p-6 relative">
-          {/* Home Button */}
+          {/* Back Button */}
           <button
             onClick={() => navigate("/")}
             className="absolute top-4 right-4 flex items-center gap-2"
           >
-            <Home className="w-6 h-6 text-lime-300" />
+            <ArrowLeftToLine className="w-6 h-6 text-lime-300" />
           </button>
 
           <motion.div
@@ -195,61 +233,19 @@ function Onboarding() {
               </motion.p>
             </motion.div>
 
+            {/* FORM STARTED FROM HERE */}
+
             <motion.form
               variants={containerVariants}
               className="space-y-3 "
               onSubmit={handleSubmit}
               style={{ maxHeight: "calc(90vh - 160px)" }}
             >
-              {/* Full Name */}
-              {/* <motion.div variants={itemVariants} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <motion.input
-                  whileFocus={{ scale: 1.005 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  required
-                  value={`${firstName} ${lastName}`}
-                  onChange={(e) => {
-                    const names = e.target.value.split(" ");
-                    setFirstName(names[0] || "");
-                    setLastName(names.slice(1).join(" ") || "");
-                  }}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
-                  placeholder="FullName"
-                />
-              </motion.div> */}
-              <motion.div variants={itemVariants} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <motion.input
-                  whileFocus={{ scale: 1.005 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  required
-                  value={`${firstName} ${lastName}`}
-                  onChange={(e) => {
-                    const names = e.target.value.split(" ");
-                    setFirstName(names[0] || "");
-                    setLastName(names.slice(1).join(" ") || "");
-                  }}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
-                  placeholder="Full Name"
-                />
-              </motion.div>
-
-              {/* Height and Weight Row */}
+              {/* HEIGHT AND WEIGHT */}
               <motion.div variants={itemVariants} className="flex gap-3">
                 <div className="flex-1 relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <Ruler className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center ">
+                    <Ruler className="h-5 w-5 text-lime-400" />
                   </div>
                   <motion.input
                     whileFocus={{ scale: 1.005 }}
@@ -259,13 +255,13 @@ function Onboarding() {
                     type="text"
                     value={height}
                     onChange={(e) => setHeight(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                    className="block w-full pl-10 pr-3 py-2.5 border  text-lime-400 selection:bg-transparent placeholder:text-lime-400 border-white/30 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
                     placeholder="Height (cm)"
                   />
                 </div>
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <Weight className="h-5 w-5 text-gray-400" />
+                    <Weight className="h-5 w-5 text-lime-400" />
                   </div>
                   <motion.input
                     whileFocus={{ scale: 1.005 }}
@@ -275,17 +271,17 @@ function Onboarding() {
                     type="text"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                    className="block w-full pl-10 pr-3 py-2.5 border text-lime-400 selection:bg-transparent placeholder:text-lime-400 border-white/30 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
                     placeholder="Weight (kg)"
                   />
                 </div>
               </motion.div>
 
-              {/* Age and Gender Row */}
+              {/* AGE AND GENDER */}
               <motion.div variants={itemVariants} className="flex gap-3">
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <Calendar className="h-5 w-5 text-gray-400" />
+                    <Calendar className="h-5 w-5 text-lime-400" />
                   </div>
                   <motion.input
                     whileFocus={{ scale: 1.005 }}
@@ -295,7 +291,7 @@ function Onboarding() {
                     type="number"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 text-lime-400 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                    className="block w-full pl-10 pr-3 py-2.5 text-lime-400 border border-white/30 rounded-lg shadow-sm placeholder:text-lime-400 selection:bg-transparent focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
                     placeholder="Age"
                   />
                 </div>
@@ -310,25 +306,74 @@ function Onboarding() {
                     name="gender"
                     value={gender}
                     onChange={(e) => setGender(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm appearance-none text-lime-400"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm aria-selected:bg-transparent focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm appearance-none text-lime-400"
                   >
                     <option value="" disabled selected>
                       Select Gender
                     </option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer-not-to-say">Prefer not to say</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                   </motion.select>
                 </div>
               </motion.div>
 
-              {/* Email */}
+              {/* BLOOD GROUP AND LIFESTYLE */}
+              <motion.div variants={itemVariants} className="flex gap-3">
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <Droplet className="h-5 w-5 text-lime-400" />
+                  </div>
+                  <motion.select
+                    whileFocus={{ scale: 1.005 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    id="bloodGroup"
+                    name="bloodGroup"
+                    value={bloodGroup}
+                    onChange={(e) => setBloodGroup(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm appearance-none text-lime-400"
+                  >
+                    <option value="" disabled>
+                      Select Blood Group
+                    </option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </motion.select>
+                </div>
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                    <HeartPulse className="h-5 w-5 text-lime-400" />
+                  </div>
+                  <motion.select
+                    whileFocus={{ scale: 1.005 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                    id="lifestyle"
+                    name="lifeStyle"
+                    value={lifeStyle}
+                    onChange={(e) => setLifeStyle(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm appearance-none text-lime-400"
+                  >
+                    <option value="" disabled>
+                      Select Lifestyle
+                    </option>
+                    <option value="Active">Active</option>
+                    <option value="Not Active">Not Active</option>
+                    <option value="Alcoholic">Alcoholic</option>
+                    <option value="Smoking">Smoking</option>
+                  </motion.select>
+                </div>
+              </motion.div>
 
-              {/* Medical History Input */}
+              {/* MEDICAL HISTORY INPUT */}
               <motion.div variants={itemVariants} className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                  <Heart className="h-5 w-5 text-gray-400" />
+                  <FileText className="h-5 w-5 text-lime-400" />
                 </div>
                 <motion.input
                   whileFocus={{ scale: 1.005 }}
@@ -338,7 +383,7 @@ function Onboarding() {
                   type="text"
                   value={medicalHistory}
                   onChange={(e) => setMedicalHistory(e.target.value)}
-                  className="block w-full pl-10 pr-16 py-2.5 border border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                  className="block w-full pl-10 pr-16 py-2.5 border border-white/30 rounded-lg shadow-sm text-lime-400 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
                   placeholder="Add medical history"
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
@@ -356,13 +401,13 @@ function Onboarding() {
                 </button>
               </motion.div>
 
-              {/* Medical History List */}
+              {/* MEDICAL HISTORY LIST */}
               <motion.div
                 variants={itemVariants}
                 className="max-h-28 overflow-y-auto border border-white/30 rounded-lg bg-white/10 backdrop-blur-sm p-2"
               >
                 {medicalHistoryList.length === 0 ? (
-                  <p className="text-center text-gray-400 text-sm py-2">
+                  <p className="text-center text-lime-400 text-sm py-2">
                     No medical history added
                   </p>
                 ) : (
@@ -372,12 +417,77 @@ function Onboarding() {
                         key={index}
                         className="text-sm bg-white/20 rounded px-3 py-1.5 flex justify-between items-center"
                       >
-                        <span className="text-gray-800">{item}</span>
+                        <span className="text-lime-400">{item}</span>
                         <button
                           type="button"
                           onClick={() => {
                             setMedicalHistoryList(
                               medicalHistoryList.filter((_, i) => i !== index)
+                            );
+                          }}
+                          className="text-red-500 hover:text-red-600 focus:outline-none"
+                        >
+                          ×
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </motion.div>
+
+              {/* ALLERGY INPUT */}
+              <motion.div variants={itemVariants} className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <ShieldAlert className="h-5 w-5 text-lime-400" />
+                </div>
+                <motion.input
+                  whileFocus={{ scale: 1.005 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                  id="allergies"
+                  name="allergies"
+                  type="text"
+                  value={allergy} // <-- this should be a string state
+                  onChange={(e) => setAllergy(e.target.value)}
+                  className="block w-full pl-10 pr-16 py-2.5 border text-lime-400 border-white/30 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-500/50 focus:border-lime-500 sm:text-sm transition-all bg-white/20 backdrop-blur-sm"
+                  placeholder="Add your allergies"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddAllergy();
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddAllergy}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm font-medium text-lime-500 hover:text-lime-600 focus:outline-none"
+                >
+                  Add
+                </button>
+              </motion.div>
+
+              {/* ALLERGY LIST */}
+              <motion.div
+                variants={itemVariants}
+                className="max-h-28 overflow-y-auto border border-white/30 rounded-lg bg-white/10 backdrop-blur-sm p-2"
+              >
+                {allergyList.length === 0 ? (
+                  <p className="text-center text-lime-400 text-sm py-2">
+                    No allergies added
+                  </p>
+                ) : (
+                  <ul className="space-y-1">
+                    {allergyList.map((item, index) => (
+                      <li
+                        key={index}
+                        className="text-sm bg-white/20 rounded px-3 py-1.5 flex justify-between items-center"
+                      >
+                        <span className="text-lime-400">{item}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAllergyList(
+                              allergyList.filter((_, i) => i !== index)
                             );
                           }}
                           className="text-red-500 hover:text-red-600 focus:outline-none"
@@ -397,26 +507,11 @@ function Onboarding() {
                 whileHover="hover"
                 whileTap="tap"
                 type="submit"
-                className="w-full flex justify-center py-2.5 px-4 rounded-lg shadow-md text-sm font-medium font-[chopra] bg-gradient-to-br from-green-500 via-lime-500 to-yellow-500 text-white hover:from-emerald-600 hover:to-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-all duration-200 backdrop-blur-sm border border-white/10"
+                className="w-full flex justify-center py-2.5 px-4 rounded-lg shadow-md text-sm font-medium font-[chopra] bg-gradient-to-br from-green-500 via-lime-500 to-yellow-500 text-black hover:from-emerald-600 hover:to-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-all duration-200 backdrop-blur-sm border border-white/10"
               >
                 Create Health Profile
               </motion.button>
             </motion.form>
-
-            {/* Already have an account link */}
-            <motion.p
-              variants={itemVariants}
-              className="mt-3 text-center text-xs bg-gradient-to-br from-green-200 via-lime-300 to-yellow-600 text-transparent bg-clip-text"
-            >
-              Already have an account?{" "}
-              <motion.a
-                whileHover={{ x: 2 }}
-                href="/login"
-                className="font-medium hover:text-lime-500 transition-colors bg-gradient-to-br from-green-600 via-lime-500 to-yellow-600 text-transparent bg-clip-text"
-              >
-                Log in
-              </motion.a>
-            </motion.p>
           </motion.div>
         </div>
       </motion.div>
