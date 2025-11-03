@@ -201,7 +201,7 @@ function Login() {
               <motion.div variants={itemVariants}>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-800 mb-1 font-[chopra] bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text"
+                  className="block text-sm font-medium mb-1 font-[chopra] bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 text-transparent bg-clip-text"
                 >
                   Email
                 </label>
