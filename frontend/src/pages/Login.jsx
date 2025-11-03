@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Lock, Mail, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", { email, password });
-    // Add your login logic here
+
+    try {
+      const response = await axiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
+
+      console.log("Login successful:", response.data);
+
+      // Save token (optional, for auth)
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
+
+      // Redirect to dashboard page
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
+      alert(
+        error.response?.data?.message || "Something went wrong during login."
+      );
+    }
   };
 
   const containerVariants = {
@@ -268,7 +288,7 @@ function Login() {
               Don&apos;t have an account?{" "}
               <motion.a
                 whileHover={{ x: 2 }}
-                href="#"
+                href="/signup"
                 className="font-medium hover:text-blue-500 transition-colors bg-gradient-to-br from-pink-600 via-purple-500 to-indigo-600 text-transparent bg-clip-text"
               >
                 Create an account

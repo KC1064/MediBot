@@ -1,7 +1,9 @@
 const User = require("../models/user.models");
 const generateToken = require("../lib/generateToken");
 const UserHealthProfile = require("../models/healthprofile.model");
+const bcrypt = require("bcrypt");
 
+// Controller for Create Account
 const signup = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -40,14 +42,39 @@ const signup = async (req, res) => {
   }
 };
 
-const login = () => {
-  console.log("Login");
+// Controller for Login
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    // Compare entered password with hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    const token = generateToken(user._id);
+
+    // return token or session handling
+    return res
+      .status(200)
+      .json({ message: "Login successful", userId: user._id, token });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
 
 const logout = () => {
   console.log("Logout");
 };
-
 
 const getUserProfile = async (req, res) => {
   try {
@@ -68,8 +95,6 @@ const getUserProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 const onboarding = async (req, res) => {
   try {
@@ -121,5 +146,5 @@ module.exports = {
   login,
   logout,
   onboarding,
-  getUserProfile
+  getUserProfile,
 };

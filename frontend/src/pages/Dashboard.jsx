@@ -123,6 +123,13 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-white">
             Welcome, <span className="text-lime-400">{userName}</span>
           </h1>
+          <button className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition" onClick={() => {
+            localStorage.removeItem("token"); 
+            localStorage.removeItem("userId");
+            navigate("/login");
+          }}>
+            Logout
+          </button>
         </div>
 
         {/* Chat Container */}
